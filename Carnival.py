@@ -20,10 +20,12 @@ red = list(i for i in range(1, 8))
 green = list(i for i in range(8, 13))
 blue = list(i for i in range(13, 16))
 
+Range = range(1, 16)
+
 for i in range(1, 16):
     currMax = comb(15, i) #nCk
     val = 0 #total value from drawing from bag of each combination
-    currCombs = combinations(range(1, 16), i)
+    currCombs = combinations(Range, i)
     for com in currCombs:
         for item in com:
             if item in red:
