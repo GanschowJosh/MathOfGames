@@ -1,3 +1,13 @@
+"""
+Carnival game with 7 red marbles (worth $-5),
+                   5 green marbles (worth $3)
+                   3 blue marbles (worth $6)
+
+                   
+Calculated: expected values from drawing 1..15 marbles from the bag
+Simplified to fractions
+"""
+
 from itertools import combinations #every nCk combination
 from math import comb #n choose k
 from fractions import Fraction 
@@ -25,5 +35,4 @@ for i in range(1, 16):
     outcomes.append(Fraction(val/currMax).limit_denominator())
 
 print(list(f"{int(Fraction(outcome).numerator)}/{int(Fraction(outcome).denominator)}" for outcome in outcomes))
-print(max(outcomes))
 
