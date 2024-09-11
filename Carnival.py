@@ -12,20 +12,19 @@ from itertools import combinations #every nCk combination
 from math import comb #n choose k
 from fractions import Fraction 
 
-eachOutcome = 0
-currCombs = []
-outcomes = []
+currCombs = []                          #list for storing all the current combinations from a given k val
+outcomes = []                           #list for storing all the outcomes to be printed at the end
 
-red = list(i for i in range(1, 8))
-green = list(i for i in range(8, 13))
-blue = list(i for i in range(13, 16))
+red = list(_ for _ in range(1, 8))      #numbering off all red dice (7 of them)
+green = list(_ for _ in range(8, 13))   #numbering off all green dice (5 of them)
+blue = list(_ for _ in range(13, 16))   #numbering off all blue dice (3 of them)
 
 Range = range(1, 16)
 
-for i in range(1, 16):
-    currMax = comb(15, i) #nCk
+for k in range(1, 16): #lowest..highest+1 number of marbles pulled out each time
+    currMax = comb(15, k) #nCk for current k
     val = 0 #total value from drawing from bag of each combination
-    currCombs = combinations(Range, i)
+    currCombs = combinations(Range, k)
     for com in currCombs:
         for item in com:
             if item in red:
