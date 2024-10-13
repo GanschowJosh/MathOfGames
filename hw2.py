@@ -77,17 +77,123 @@ def spotsWithReroll():
     bustProb = bustCount / totalOutcomes**2
     print(bustProb)
 
+from collections import defaultdict
 def seventhInningStretch():
-    coloradoPoss = [(min(i, j)-1) for i in range(1, 7) for j in range(1, 7)] #roll 2, score runs equal to min value minus one
+    coloradoPoss = [(i, j) for i in range(1, 7) for j in range(1, 7)] #roll 2, score runs equal to min value minus one
+    
+    coloradoEV = 0
+    coloradoDict = defaultdict(list)
+    for i, j in coloradoPoss:
+        coloradoDict[min(i, j)-1].append((i,j))
+    for k, v in coloradoDict.items():
+        #print(f"{k}: {len(v)}")
+        coloradoEV += k*len(v)
+    
+    #print(coloradoEV/36)
 
-    floridaPoss = [0 if i+j+k<9 else 2 for i in range(1, 7) for j in range(1, 7) for k in range(1, 7)] #roll 3, score 0 runs if the sum is less than 9, else 2 runs
+    coloradoPoss2 = [i for i in range(1, 7)]
+    coloradoEV2 = 0
+    coloradoDict2 = defaultdict(list)
+    for i in coloradoPoss2:
+        coloradoDict2[i-1].append(i)
+    for k, v in coloradoDict2.items():
+        #print(f"{k}: {len(v)}, {v}")
+        coloradoEV2 += k*len(v)
+    
+    #print(coloradoEV2/6)
+    
 
-    clevelandPoss = [(i+j)//4 for i in range(1, 7) for j in range(1, 7)] #roll 2, score one run for every four pips showing
+    floridaPoss = [(i,j,k) for i in range(1, 7) for j in range(1, 7) for k in range(1, 7)] #roll 3, score 0 runs if the sum is less than 9, else 2 runs
+
+    floridaEV = 0
+    floridaDict = defaultdict(list)
+    for i, j, k in floridaPoss:
+        if i+j+k < 9:
+            floridaDict[0].append((i, j, k))
+        else:
+            floridaDict[2].append((i, j, k))
+    for k, v in floridaDict.items():
+        #print(f"{k}: {len(v)}")
+        floridaEV += k*len(v)
+    
+    #print(floridaEV/(36*6))
+
+    floridaPoss2 = [(i, j, k, l) for i in range(1, 7) for j in range(1, 7) for k in range(1, 7) for l in range(1, 7)]
+    floridaEV2 = 0
+    floridaDict2 = defaultdict(list)
+    for i, j, k, l in floridaPoss2:
+        if i+j+k+l < 9:
+            floridaDict2[0].append((i, j, k, l))
+        else:
+            floridaDict2[2].append((i, j, k, l))
+    for k, v in floridaDict2.items():
+        #print(f"{k}: {len(v)}, {v[:4]}")
+        floridaEV2 += k*len(v)
+    #print(floridaEV2/(6**4))
+
+    clevelandPoss = [(i,j) for i in range(1, 7) for j in range(1, 7)] #roll 2, score one run for every four pips showing
+    clevelandDict = defaultdict(list)
+    clevelandEV = 0
+    for i, j in clevelandPoss:
+        clevelandDict[(i+j)//4].append((i, j))
+    for k, v in clevelandDict.items():
+        #print(f"{k}: {len(v)}")
+        clevelandEV += k*len(v)
+    #print(clevelandEV/36)
+
+    clevelandPoss2 = [(i, j, k) for i in range(1, 7) for j in range(1, 7) for k in range(1, 7)]
+    clevelandDict2 = defaultdict(list)
+    clevelandEV2 = 0
+    for i, j, k in clevelandPoss2:
+        clevelandDict2[(i+j+k)//4].append((i, j, k))
+    for k, v in clevelandDict2.items():
+        clevelandEV2+=k*len(v)
+        #print(f"{k}: {len(v)}, {v[:4]}")
+    #print(clevelandEV2/216)
 
     seattlePoss = []
     for i in range(1, 7):
         for j in range(1, 7):
             for k in range(1, 7):
-                seattlePoss.append(sorted(i, j, k)[1]-sorted(i, j, k)[0]) #roll 3, score runs equal to the difference between the two lowest dice
+                seattlePoss.append((i, j, k)) #roll 3, score runs equal to the difference between the two lowest dice
+    seattleDict = defaultdict(list)
+    seattleEV = 0
+    for i, j, k in seattlePoss:
+        seattleDict[sorted([i, j, k])[1] - sorted([i, j, k])[0]].append((i, j, k))
+    
+    for k, v in seattleDict.items():
+        #print(f"{k}: {len(v)}, {v[:4]}")
+        seattleEV += k*len(v)
+    #print(seattleEV/(216))
 
-    minnesotaPoss = [abs(i-4) for i in range(1, 7)] #roll 1, score runs equal to the distance of the value from 4
+    seattlePoss2 = [(i, j) for i in range(1, 7) for j in range(1, 7)]
+    seattleDict2 = defaultdict(list)
+    seattleEV2 = 0
+    for i, j in seattlePoss2:
+        seattleDict2[abs(i-j)].append((i, j))
+    for k, v in seattleDict2.items():
+        seattleEV2 += k*len(v)
+        #print(f"{k}: {len(v)}, {v[:4]}")
+    #print(seattleEV2/36)
+
+
+    minnesotaPoss = [i for i in range(1, 7)] #roll 1, score runs equal to the distance of the value from 4
+    minnesotaDict = defaultdict(list)
+    minnesotaEV = 0
+    for i in minnesotaPoss:
+        minnesotaDict[abs(i-4)].append(i)
+    for k, v in minnesotaDict.items():
+        #print(f"{k}: {len(v)}, {v}")
+        minnesotaEV += k*len(v)
+    #print(minnesotaEV/6)
+
+    minnesotaPoss2 = [(i, j) for i in range(1, 7) for j in range(1, 7)]
+    minnesotaDict2 = defaultdict(list)
+    minnesotaEV2 = 0
+    for i, j in minnesotaPoss2:
+        minnesotaDict2[abs((i+j)-4)].append((i, j))
+    for k, v in minnesotaDict2.items():
+        minnesotaEV2 += k*len(v)
+        print(f"{k}: {len(v)}, {v[:4]}")
+    print(minnesotaEV2/36)
+seventhInningStretch()
