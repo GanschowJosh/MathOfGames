@@ -106,10 +106,11 @@ def testCase2(attacker, defender):
         print(f"{k}: {len(v)}, {v[:4]}")  # Showing first 4 outcomes for each result
 
 def testCase3():
-    def printOutcomes(outcomes):
-        total = sum(outcomes.values())
+    def printOutcomes(outcomes): #prints the outcomes
+        total = sum(outcomes.values()) #calculates the total number of outcomes
         print(f"Total possible outcomes: {total}")
         print("\nDetailed outcomes:")
+        #sorts outcomes by occurrences, then attacker and defender troop counts
         for (a, d), count in sorted(outcomes.items(), key=lambda x: (-x[1], -x[0][0], -x[0][1])):
             if a > 0 and d == 0:
                 result = "Attacker wins"
@@ -139,9 +140,11 @@ def testCase3():
             print()
             printOutcomes(outcomes)
 
+    #simualtes combat between attacker and defender
     def simulateCombat(attacker, defender):
-        die = [0, 1, 1, 1, 1, 2]
+        die = [0, 1, 1, 1, 1, 2] #custom die
 
+        #function determines the number of dice to roll based on the number of troops the party has left
         def rollDice(troops):
             if troops <= 2:
                 return 1
@@ -152,53 +155,55 @@ def testCase3():
             else:
                 return 4
         
+        #simulates a single round given the number of troops for each party
         def simulateRound(a_troops, d_troops):
             a_dice = rollDice(a_troops)
             d_dice = rollDice(d_troops)
 
             outcomes = defaultdict(int)
             
+            #simulates all possible dice rolls for attacker and defender
             for a_roll in product(die, repeat=a_dice):
                 for d_roll in product(die, repeat=d_dice):
                     a_sum = sum(a_roll)
                     d_sum = sum(d_roll)
 
-                    if a_sum > d_sum:
+                    if a_sum > d_sum: #attacker wins the round
                         new_d_troops = max(0, d_troops - (a_sum - d_sum))
                         outcomes[(a_troops, new_d_troops)] += 1
-                    elif d_sum > a_sum:
+                    elif d_sum > a_sum: #defender wins the round
                         new_a_troops = max(0, a_troops - (d_sum - a_sum))
                         outcomes[(new_a_troops, d_troops)] += 1
                     else:
                         # In case of a tie, both lose 1 troop
                         outcomes[(max(0, a_troops - 1), max(0, d_troops - 1))] += 1
             
-            return outcomes
+            return outcomes #returns all the outcomes for the given round
 
-        results = {(attacker, defender): 1}
+        results = {(attacker, defender): 1} #initial result, start with given attacker and defender troop counts
         
         while True:
             new_results = defaultdict(int)
             for (a, d), count in results.items():
                 if a == 0 or d == 0:
-                    new_results[(a, d)] += count
+                    new_results[(a, d)] += count #if any side is out of troops, no more rounds
                 else:
-                    round_outcomes = simulateRound(a, d)
+                    round_outcomes = simulateRound(a, d) #simulates the round
                     for outcome, outcome_count in round_outcomes.items():
-                        new_results[outcome] += count * outcome_count
+                        new_results[outcome] += count * outcome_count #udpates the outcomes based on the simulated round
             
             if new_results == results:
-                break
-            results = new_results
+                break #stop if there are no new outcomes generated, (i.e., the simulation stabilizes)
+            results = new_results #updates results for the next round
         
         return results
 
-    initialAttacker = 5
-    initialDefender = 3
+    initialAttacker = 5 #initial number of attacker troops
+    initialDefender = 3 #initial number of defender troops
 
     print(f"Initial state: {initialAttacker}, {initialDefender}")
-    results = simulateCombat(initialAttacker, initialDefender)
-    analyzeOutcomes(results)
+    results = simulateCombat(initialAttacker, initialDefender) #runs the simulation
+    analyzeOutcomes(results) #analyzes and prints the outcomes
 
     
 testCase3()
