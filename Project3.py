@@ -16,10 +16,15 @@ part of this assignment, you must decide how to treat the Excuse card.
 # 4. Pair
 # 5. 3 Crowns and Excuse
 
-from itertools import combinations
-from math import comb
+#how we will treat the Excuse card:
+# 1. The Excuse card will be treated as a card with no value or suit
+# 2. The Excuse card can contribute to the 3 Crowns and Excuse hand, no use in other hands
 
-class Card:
+#importing combination tools
+from itertools import combinations #for iterating over all possible 4-card hands
+from math import comb #for calculating the expected total number of ways to pick 4 cards from the deck
+
+class Card: #class to define a card object, hold name, value, and suits associated with the card
     def __init__(self, name, value, suits):
         self.name = name
         self.value = value
@@ -77,19 +82,23 @@ deck = [
     Card("Nine of Suns and Moons", 9, ["Suns", "Moons"]),
     Card("Nine of Wyrms and Waves", 9, ["Wyrms", "Waves"]),
 
+    #excuse card (no value or suit)
     Card("The Excuse", -1, [])
 ]
 
+#function to iterate over all possible 4-card hands in the deck
 def iterate_hands(deck):
     for hand in combinations(deck, 4):
         yield hand
 
+#function to check if the given hand is 4-suited (4 suits are present in the hand)
 def is_4_suited(hand):
     suits = set()
     for card in hand:
         suits.update(card.suits)
     return len(suits) == 4
 
+#function to check if the given hand has a matching suit ace and crown
 def is_matching_suit_ace_and_crown(hand):
     ace = False
     crown = False
@@ -110,15 +119,18 @@ def is_matching_suit_ace_and_crown(hand):
     else:
         return False
 
+#function to check if the given hand is a straight (4 cards in a row)
 def is_straight(hand):
     #handle unvalued excuse card
     values = sorted([card.value for card in hand])
     return values[0] == values[1] - 1 == values[2] - 2 == values[3] - 3
 
+#function to check if the given hand is a pair (3 unique values)
 def is_pair(hand):
     values = [card.value for card in hand]
     return len(set(values)) == 3
 
+#function to check if the given hand is 3 crowns and an excuse
 def is_3_crowns_and_excuse(hand):
     crowns = 0
     excuse = False
@@ -140,6 +152,7 @@ if __name__ == "__main__":
     total_3_crowns_and_excuse = 0
     no_hand = 0
 
+    #iterating over all possible 4-card hands in the deck
     for hand in iterate_hands(deck):
         total_hands += 1
         if is_3_crowns_and_excuse(hand):
@@ -156,6 +169,7 @@ if __name__ == "__main__":
             no_hand += 1
 
 
+    #outputting results of iterating over hands
         
     print(f"Total hands: {total_hands}")
     print(f"4-suited: {total_4_suited} ({total_4_suited/total_hands:.2%})")
@@ -166,17 +180,26 @@ if __name__ == "__main__":
     print(f"No hand: {no_hand} ({no_hand/total_hands:.2%})")
     print("Calculated total matches expected total!" if sum([total_4_suited, total_matching_ace_and_crown, total_straight, total_pair, total_3_crowns_and_excuse, no_hand])==total_hands and total_hands == total_expected_hands else "Incorrect Total")
     
-    #calculate expected value
+    #calculate expected value, if expected value is negative, the house is favored to gain money
     
-    #payouts
+    #payouts: can be adjusted to change expected value
     payout_4_suited = 1
     payout_matching_ace_and_crown = 8
     payout_straight = 5
     payout_pair = 2
-    payout_3_crowns_and_excuse = 20
+    payout_3_crowns_and_excuse = 500
 
-    #cost of losing
+    #cost of losing (no hand cost)
     cost = 4
 
-    expected_value = (total_4_suited*payout_4_suited + total_matching_ace_and_crown*payout_matching_ace_and_crown + total_straight*payout_straight + total_pair*payout_pair + total_3_crowns_and_excuse*payout_3_crowns_and_excuse - no_hand*cost)/total_hands
+    #summing up all the expected values and dividing by total hands
+    expected_value =(
+                        total_4_suited*payout_4_suited
+                        + total_matching_ace_and_crown*payout_matching_ace_and_crown 
+                        + total_straight*payout_straight + total_pair*payout_pair 
+                        + total_3_crowns_and_excuse*payout_3_crowns_and_excuse
+                        - no_hand*cost 
+                    ) / total_hands #dividing by total hands to get expected value per hand
+    
+    #outputting expected value
     print(f"\nExpected Value: {expected_value:.4f}")
