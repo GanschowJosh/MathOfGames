@@ -17,6 +17,7 @@ part of this assignment, you must decide how to treat the Excuse card.
 # 5. 3 Crowns and Excuse
 
 from itertools import combinations
+from math import comb
 
 class Card:
     def __init__(self, name, value, suits):
@@ -131,6 +132,7 @@ def is_3_crowns_and_excuse(hand):
 if __name__ == "__main__":
     #run through the combinations to find probabilities of each hand
     total_hands = 0
+    total_expected_hands = comb(len(deck), 4) #calculated expected total based on number of ways to pick 4 cards from the deck
     total_4_suited = 0
     total_matching_ace_and_crown = 0
     total_straight = 0
@@ -146,10 +148,10 @@ if __name__ == "__main__":
             total_straight += 1
         elif is_matching_suit_ace_and_crown(hand):
             total_matching_ace_and_crown += 1
-        elif is_pair(hand):
-            total_pair += 1
         elif is_4_suited(hand):
             total_4_suited += 1
+        elif is_pair(hand):
+            total_pair += 1
         else:
             no_hand += 1
 
@@ -162,5 +164,19 @@ if __name__ == "__main__":
     print(f"Pair: {total_pair} ({total_pair/total_hands:.2%})")
     print(f"3 Crowns and Excuse: {total_3_crowns_and_excuse} ({total_3_crowns_and_excuse/total_hands:.2%})")
     print(f"No hand: {no_hand} ({no_hand/total_hands:.2%})")
-    print("Total Reached" if sum([total_4_suited, total_matching_ace_and_crown, total_straight, total_pair, total_3_crowns_and_excuse, no_hand])==total_hands else "Incorrect Total")
+    print("Calculated total matches expected total!" if sum([total_4_suited, total_matching_ace_and_crown, total_straight, total_pair, total_3_crowns_and_excuse, no_hand])==total_hands and total_hands == total_expected_hands else "Incorrect Total")
     
+    #calculate expected value
+    
+    #payouts
+    payout_4_suited = 1
+    payout_matching_ace_and_crown = 8
+    payout_straight = 5
+    payout_pair = 2
+    payout_3_crowns_and_excuse = 20
+
+    #cost of losing
+    cost = 4
+
+    expected_value = (total_4_suited*payout_4_suited + total_matching_ace_and_crown*payout_matching_ace_and_crown + total_straight*payout_straight + total_pair*payout_pair + total_3_crowns_and_excuse*payout_3_crowns_and_excuse - no_hand*cost)/total_hands
+    print(f"\nExpected Value: {expected_value:.4f}")
