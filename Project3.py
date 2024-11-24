@@ -184,10 +184,10 @@ if __name__ == "__main__":
     
     #payouts: can be adjusted to change expected value
     payout_4_suited = 1
-    payout_matching_ace_and_crown = 8
-    payout_straight = 5
+    payout_matching_ace_and_crown = 5
+    payout_straight = 8
     payout_pair = 2
-    payout_3_crowns_and_excuse = 500
+    payout_3_crowns_and_excuse = 100
 
     #cost of losing (no hand cost)
     cost = 4
